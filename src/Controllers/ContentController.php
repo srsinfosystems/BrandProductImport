@@ -3,6 +3,7 @@ namespace BrandProductImport\Controllers;
 
 use Plenty\Plugin\Controller;
 use Plenty\Plugin\Templates\Twig;
+use Plenty\Plugin\Log\Loggable
 
 /**
  * Class ContentController
@@ -10,6 +11,7 @@ use Plenty\Plugin\Templates\Twig;
  */
 class ContentController extends Controller
 {
+	use Loggable;
 
 	public $access_token;
 	public $plentyhost;
@@ -34,7 +36,22 @@ class ContentController extends Controller
 	{
 		return $twig->render('BrandProductImport::content.mainView');
 	}
+	public function cliImport()
+	{
 
+		$brands = $this->getBrands();
+		if(empty($brands)) exit;
+		$host = "joiurjeuiklb.plentymarkets-cloud02.com";
+		$login = $this->login($host);
+		$login = json_decode($login, true);
+		$this->access_token = $login['access_token'];
+		$this->plentyhost = "https://".$host;
+		$this->drophost = "https://www.brandsdistribution.com";
+
+		foreach($brands as $brand) {
+			$flag = $this->getAllItems($brand);
+		}
+	}
 	public function importProduct(Twig $twig):string
 	{
 		//echo $_REQUEST;
@@ -95,6 +112,7 @@ class ContentController extends Controller
 			  }
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
+				if($items['name'] != "EQT_SUPPORT_ULTRA-P") continue;
 				$availability = $this->checkAvailability($items, $variations);
 				if($availability == "1") {
 				 continue;
@@ -1004,5 +1022,11 @@ public function checkAvailability($items, $variations) {
 
     }
 }
+public function getBrands() {
+		//$brands = array('Adidas','Bikkembergs','Coach','Converse','Desigual','Diadora','Diadora Heritage','Diesel','Emporio Armani','Gant','Geographical Norway','Geox','Guess','Hugo Boss','Lacoste','Love Moschino','Michael Kors','Napapijri','New Balance','Nike','Ocean Sunglasses','Puma','Ralph Lauren','Ray-Ban','Saucony','Superga','TOMS','The North Face','Timberland','Tommy Hilfiger','U.S. Polo','Vans','Versace Jeans');
+		$brands = array('Adidas');
+		return $brands;
+
+	}
 
 }

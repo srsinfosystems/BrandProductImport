@@ -2,6 +2,8 @@
 namespace BrandProductImport\Providers;
 
 use Plenty\Plugin\ServiceProvider;
+use Plenty\Modules\Cron\Services\CronContainer;
+use BrandProductImport\Crons\BrandProductImportCron;
 
 /**
  * Class HelloWorldServiceProvider
@@ -10,6 +12,9 @@ use Plenty\Plugin\ServiceProvider;
 class BrandProductImportServiceProvider extends ServiceProvider
 {
 
+	public function boot(CronContainer $container) {
+		//$container->add(CronContainer::EVERY_FIFTEEN_MINUTES, BrandProductImportCron::class);
+	}
 	/**
 	 * Register the service provider.
 	 */
