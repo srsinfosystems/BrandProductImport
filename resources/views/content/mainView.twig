@@ -34,6 +34,12 @@
 			    <legend class="scheduler-border">Create Items :</legend>
 			    <div class="control-group">
 			        Brand: <!-- <input type="text" name="brand" > -->
+			        <select name="brand">
+						{% for value in brands %}
+						<option value="{{value}}">{{value}}</option>
+						{% endfor %}
+					</select>
+<!--
 <select name="brand">
 <option value="Adidas">Adidas</option>
 <option value="Bikkembergs">Bikkembergs</option>
@@ -70,6 +76,7 @@
 <option value="Versace Jeans">Versace Jeans</option>
 
 </select>
+ -->
 				  <input type="submit" class="btn btn-success" value="submit" />
 			    </div>
 			</fieldset>
