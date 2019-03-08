@@ -1,0 +1,8 @@
+{
+      "name":"BrandProductImport",
+      "description":"Import products from Brand Distribution",
+      "namespace":"BrandProductImport",
+      "author":"Arun SIngh",
+      "type":"cron",
+      "serviceProvider":"BrandProductImport\\Providers\\BrandProductImportServiceProvider"
+}

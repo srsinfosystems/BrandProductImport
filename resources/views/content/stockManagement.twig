@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- {{ data }} -->
+<div class="container-fluid">
+<div class="row">
+	<div class="table-responsive">
+		<table class="table table-hover table-sm table-striped table-bordered">
+			<thead>
+				<tr>
+					<td>itemId</td>
+					<td>warehouseId</td>
+					<td>stockPhysical</td>
+					<td>reservedStock</td>
+					<td>reservedEbay</td>
+					<td>reorderDelta</td>
+					<td>stockNet</td>
+					<td>reordered</td>
+					<td>reservedBundle</td>
+					<td>averagePurchasePrice</td>
+					<td>updatedAt</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for key,value in data.entries %}
+				    <!-- Key : {{ key }}
+				    Value : {{ value }} -->
+			    <tr>
+					<td>{{ value.itemId }}</td>
+					<td>{{ value.warehouseId }}</td>
+					<td>{{ value.stockPhysical }}</td>
+					<td>{{ value.reservedStock }}</td>
+					<td>{{ value.reservedEbay }}</td>
+					<td>{{ value.reorderDelta }}</td>
+					<td>{{ value.stockNet }}</td>
+					<td>{{ value.reordered }}</td>
+					<td>{{ value.reservedBundle }}</td>
+					<td>{{ value.averagePurchasePrice }}</td>
+					<td>{{ value.updatedAt }}</td>
+				</tr>
+				<!-- {% endfor %}
+				<tr>
+				<td colspan="11">				
+				{% for i in range(1, data.lastPageNumber) %}
+				<a class="btn btn-default" onclick="getstock( {{ i }} );" >{{ i }}</a>
+				{% endfor %}
+				</td>
+				</tr> -->
+			</tbody>
+		</table>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+	function getstock(pageNo){
+		
+		/*$.ajax({
+			'type': 'get',
+			'url': '/Content/updateStock?pageNo='+pageNo,
+			success: function(result){
+				console.log(result);
+			}
+		})*/
+	}
+</script>
+</body>
+</html>

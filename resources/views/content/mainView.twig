@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<style type="text/css">
+		fieldset.scheduler-border {
+		    border: 1px groove #ddd !important;
+		    padding: 0 1.4em 1.4em 1.4em !important;
+		    margin: 0 0 1.5em 0 !important;
+		    -webkit-box-shadow:  0px 0px 0px 0px #000;
+		            box-shadow:  0px 0px 0px 0px #000;
+		}
+		legend.scheduler-border {
+		    width:inherit; /* Or auto */
+		    padding:0 10px; /* To give a bit of padding on the left and right */
+		    border-bottom:none;
+		}
+	</style>
+</head>
+<body>
+
+<!-- <div class="alert alert-success">
+  <strong>Success!</strong> Items created successfully.
+</div> -->
+{{ data }}
+	<div class="row">
+		<div class="col-md-6">
+		<form id="StoreItems" type="GET" action="/importProduct">
+			<fieldset class="scheduler-border">
+			    <legend class="scheduler-border">Create Items :</legend>
+			    <div class="control-group">
+			        Brand: <!-- <input type="text" name="brand" > -->
+<select name="brand">
+<option value="Adidas">Adidas</option>
+<option value="Bikkembergs">Bikkembergs</option>
+<option value="Coach">Coach</option>
+<option value="Converse">Converse</option>
+<option value="Desigual">Desigual</option>
+<option value="Diadora">Diadora</option>
+<option value="Diadora Heritage">Diadora Heritage</option>
+<option value="Diesel">Diesel</option>
+<option value="Emporio Armani">Emporio Armani</option>
+<option value="Gant">Gant</option>
+<option value="Geographical Norway">Geographical Norway</option>
+<option value="Geox">Geox</option>
+<option value="Guess">Guess</option>
+<option value="Hugo Boss">Hugo Boss</option>
+<option value="Lacoste">Lacoste</option>
+<option value="Love Moschino">Love Moschino</option>
+<option value="Michael Kors">Michael Kors</option>
+<option value="Napapijri">Napapijri</option>
+<option value="New Balance">New Balance</option>
+<option value="Nike">Nike</option>
+<option value="Ocean Sunglasses">Ocean Sunglasses</option>
+<option value="Puma">Puma</option>
+<option value="Ralph Lauren">Ralph Lauren</option>
+<option value="Ray-Ban">Ray-Ban</option>
+<option value="Saucony">Saucony</option>
+<option value="Superga">Superga</option>
+<option value="TOMS">TOMS</option>
+<option value="The North Face">The North Face</option>
+<option value="Timberland">Timberland</option>
+<option value="Tommy Hilfiger">Tommy Hilfiger</option>
+<option value="U.S. Polo">U.S. Polo</option>
+<option value="Vans">Vans</option>
+<option value="Versace Jeans">Versace Jeans</option>
+
+</select>
+				  <input type="submit" class="btn btn-success" value="submit" />
+			    </div>
+			</fieldset>
+			</form>
+
+			<!-- <form id="scockManagement" type="get" action="/stockManagement">
+			<fieldset class="scheduler-border">
+			    <legend class="scheduler-border">Update Stock :</legend>
+			    <div class="control-group">
+			       <input type="submit" class="btn btn-success" value="Update" id="stockUpdate" />
+			    </div>
+			</fieldset>
+			</form> -->
+
+
+
+		</div>
+		<div class="col-md-6"></div>
+	</div>
+	<script type="text/javascript">
+
+		/*$(document).ready(function(){
+			setTimeout(function() {
+			    $("#stockUpdate").trigger('click');
+			 }, 3.6e+6);
+
+		 })*/
+	</script>
+</body>
+</html>
