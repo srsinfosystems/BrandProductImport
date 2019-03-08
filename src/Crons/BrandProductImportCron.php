@@ -9,7 +9,6 @@ class BrandProductImportCron extends Cron {
 	use Loggable;
 	public function handle(ContentController $contentController) {
 		$contentController->cliImport();
-		//App::call('StockUpdatePlugin\Controllers\ContentController@update_stock');
 
 	}
 }
