@@ -1,4 +1,4 @@
-<?php set_time_limit(0);
+<?php
 namespace BrandProductImport\Controllers;
 
 use Plenty\Plugin\Controller;
