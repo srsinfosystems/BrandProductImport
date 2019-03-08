@@ -24,12 +24,12 @@ class ContentController extends Controller
 	public function cgihome(Twig $twig):string
 	{
 		$message = $_GET['message'];
-		echo $file = file_get_contents('brands.txt');
-		exit;
+		$brands = $this->getBrands();
+		echo json_encode($brands); exit;
 		if (!empty($message)) {
 			return $twig->render('BrandProductImport::content.mainView',array('data' => "success"));
 		}else{
-			return $twig->render('BrandProductImport::content.mainView');
+			return $twig->render('BrandProductImport::content.mainView', $brands);
 		}
 
 
@@ -51,6 +51,7 @@ class ContentController extends Controller
 		$this->drophost = "https://www.brandsdistribution.com";
 
 		foreach($brands as $brand) {
+			if(empty($brand)) continue;
 			$flag = $this->getAllItems($brand);
 		}
 	}
@@ -1032,9 +1033,41 @@ public function checkAvailability($items, $variations) {
     }
 }
 public function getBrands() {
-		//$brands = array('Adidas','Bikkembergs','Coach','Converse','Desigual','Diadora','Diadora Heritage','Diesel','Emporio Armani','Gant','Geographical Norway','Geox','Guess','Hugo Boss','Lacoste','Love Moschino','Michael Kors','Napapijri','New Balance','Nike','Ocean Sunglasses','Puma','Ralph Lauren','Ray-Ban','Saucony','Superga','TOMS','The North Face','Timberland','Tommy Hilfiger','U.S. Polo','Vans','Versace Jeans');
+
+	  $curl = curl_init();
+
+	  curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://raw.githubusercontent.com/srsinfosystems/nunobrands/master/brands.txt?".time(),
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_ENCODING => "",
+	  CURLOPT_MAXREDIRS => 10,
+	  CURLOPT_TIMEOUT => 30,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+		"cache-control: no-cache",
+		"content-type: application/json",
+	  ),
+	));
+
+	$response = curl_exec($curl);
+	$err = curl_error($curl);
+
+	curl_close($curl);
+
+	if ($err) {
+	  echo "cURL Error #:" . $err;
+	} else {
+
+	 $response = explode("\n", $response);
+	 return $response;
+	}
+
+		/*
+		$brands = array('Adidas','Bikkembergs','Coach','Converse','Desigual','Diadora','Diadora Heritage','Diesel','Emporio Armani','Gant','Geographical Norway','Geox','Guess','Hugo Boss','Lacoste','Love Moschino','Michael Kors','Napapijri','New Balance','Nike','Ocean Sunglasses','Puma','Ralph Lauren','Ray-Ban','Saucony','Superga','TOMS','The North Face','Timberland','Tommy Hilfiger','U.S. Polo','Vans','Versace Jeans');
 		$brands = array('Adidas');
 		return $brands;
+		*/
 
 	}
 
