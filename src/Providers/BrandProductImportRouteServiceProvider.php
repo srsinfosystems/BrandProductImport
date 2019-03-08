@@ -15,7 +15,7 @@ class BrandProductImportRouteServiceProvider extends RouteServiceProvider
 	 */
 	public function map(Router $router)
 	{
-		$router->get('home', 'BrandProductImport\Controllers\ContentController@cgihome');
+		$router->get('cgihome', 'BrandProductImport\Controllers\ContentController@cgihome');
 
 	}
 
