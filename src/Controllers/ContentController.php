@@ -3,7 +3,7 @@ namespace BrandProductImport\Controllers;
 
 use Plenty\Plugin\Controller;
 use Plenty\Plugin\Templates\Twig;
-use Plenty\Plugin\Log\Loggable
+use Plenty\Plugin\Log\Loggable;
 
 /**
  * Class ContentController
