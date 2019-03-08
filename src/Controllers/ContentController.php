@@ -24,8 +24,8 @@ class ContentController extends Controller
 	public function cgihome(Twig $twig):string
 	{
 		$message = $_GET['message'];
-		$file = file('brands.txt');
-		echo json_encode($file); exit;
+		echo $file = file_get_contents('brands.txt');
+		exit;
 		if (!empty($message)) {
 			return $twig->render('BrandProductImport::content.mainView',array('data' => "success"));
 		}else{
