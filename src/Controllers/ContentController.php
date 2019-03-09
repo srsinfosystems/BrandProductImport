@@ -81,7 +81,7 @@ class ContentController extends Controller
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
-		  CURLOPT_URL => $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".$brand,
+		  CURLOPT_URL => $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand),
 		  CURLOPT_RETURNTRANSFER => true,
 		  CURLOPT_ENCODING => "",
 		  CURLOPT_MAXREDIRS => 10,
@@ -686,7 +686,7 @@ class ContentController extends Controller
 		if(empty($brand))return;
 
 		curl_setopt_array($curl, array(
-		  CURLOPT_URL => $this->plentyhost."/rest/items/manufacturers?name=".$brand,
+		  CURLOPT_URL => $this->plentyhost."/rest/items/manufacturers?name=".urlencode($brand),
 		  CURLOPT_RETURNTRANSFER => true,
 		  CURLOPT_ENCODING => "",
 		  CURLOPT_MAXREDIRS => 10,
@@ -945,7 +945,7 @@ class ContentController extends Controller
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
-	  CURLOPT_URL => $this->plentyhost."/rest/items/manufacturers?name=".$brand,
+	  CURLOPT_URL => $this->plentyhost."/rest/items/manufacturers?name=".urlencode($brand),
 	  CURLOPT_RETURNTRANSFER => true,
 	  CURLOPT_ENCODING => "",
 	  CURLOPT_MAXREDIRS => 10,
@@ -980,7 +980,7 @@ class ContentController extends Controller
 		$curl = curl_init();
 
 	curl_setopt_array($curl, array(
-	  CURLOPT_URL => $this->plentyhost."/rest/items/variations?manufacturerId=".$manufacturerId."&isActive=true",
+	  CURLOPT_URL => $this->plentyhost."/rest/items/variations?manufacturerId=".$manufacturerId."&isActive=true&stockWarehouseId=104",
 	  CURLOPT_RETURNTRANSFER => true,
 	  CURLOPT_ENCODING => "",
 	  CURLOPT_MAXREDIRS => 10,
@@ -1015,22 +1015,21 @@ class ContentController extends Controller
 
 public function checkAvailability($items, $variations) {
 	$models = array();
+	$found = "2";
     if(isset($items['models']['model']['availability'])) {
       if(array_key_exists($items['models']['model']['id'], $variations)) {
 		return "1";
 	  }
     }
     else {
-		$found = "2";
       for($i=0; $i<count($items['models']['model']); $i++) {
 		if(array_key_exists($items['models']['model'][$i]['id'], $variations)) {
 			$found = "1"; break;
 		}
 
       }
-      return $found;
-
     }
+     return $found;
 }
 public function getBrands() {
 
