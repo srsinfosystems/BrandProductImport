@@ -72,7 +72,7 @@ class ContentController extends Controller
 		$this->variations = array();
 		$this->printme = "Y";
 		$flag = $this->getAllItems($brand);
-
+		exit;
 
 		/*if ($flag == 1)
 			$data = "Items created successfully.";
@@ -128,9 +128,11 @@ class ContentController extends Controller
 	      	 $manufacturerId = $this->getManufacturerId($brand);
 			  if(!empty($manufacturerId)) {
 				$page = 1;
-				$variations = $this->getManufacturerVariations($manufacturerId,$page);
+				$this->getManufacturerVariations($manufacturerId,$page);
 			  }
-
+			  if($this->printme == "Y") {
+				echo json_encode($this->variations);
+			  }
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
 
@@ -138,9 +140,7 @@ class ContentController extends Controller
 				if($availability == "1") {
 				 continue;
 				}
-				if($this->printme == "Y") {
-					echo json_encode($availability);
-				}
+
 	            $arritem = $this->createItem($items);
 	            if($this->printme == "Y") {
 					 echo json_encode($arritem);
@@ -174,6 +174,9 @@ class ContentController extends Controller
 	            if(isset($countVariation['entries'][1])) {}
 	            else {
 				$this->deleteItem($arritem['itemId']);
+				if($this->printme == "Y") {
+					echo "DELETED";
+				}
 				}
 
 	            $i++;
@@ -1031,22 +1034,20 @@ class ContentController extends Controller
 	  echo "cURL Error #:" . $err;
 	} else {
 	  $response =json_decode($response,true);
-	  if(empty($response) || empty($response['entries'])) return;
+	  if(isset($response['entries']) && !empty($response['entries'])) {
 
 	  foreach($response['entries'] as $entries) {
 		  $number = $entries['number'];
 		$this->variations[$number] = $entries['id'];
 	  }
-
+	}
 	}
 	 $last_page = $response['lastPageNumber'];
 	if($page != $last_page) {
 		$page++;
 		$this->getManufacturerVariations($manufacturerId, $page);
 	}
-	else {
-		return $this->variations;
-	}
+
 }
 
 public function checkAvailability($items) {
