@@ -130,9 +130,7 @@ class ContentController extends Controller
 				$page = 1;
 				$variations = $this->getManufacturerVariations($manufacturerId,$page);
 			  }
-			  if($this->printme == "Y") {
-				echo json_encode($this->variations);
-			  }
+
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
 
@@ -147,7 +145,7 @@ class ContentController extends Controller
 	            if($this->printme == "Y") {
 					 echo json_encode($arritem);
 				}
-
+				if(empty($arritem['itemId'])) continue;
 
 	            if(empty($arritem['variationId'])) {
 					if(!empty($arritem['itemId'])) {
