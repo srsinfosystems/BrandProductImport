@@ -40,7 +40,7 @@ class ContentController extends Controller
 	}
 	public function cliImport()
 	{
-
+		exit;
 		$brands = $this->getBrands();
 		if(empty($brands)) exit;
 		$host = "joiurjeuiklb.plentymarkets-cloud02.com";
