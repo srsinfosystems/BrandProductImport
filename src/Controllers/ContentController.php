@@ -87,7 +87,7 @@ class ContentController extends Controller
 		$checktime = date("c", $checktime);
 		$url = "";
 		if($this->printme == "Y") {
-			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand);
+			echo $url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand);
 		}
 		else {
 			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand)."&since=".urlencode($checktime);
@@ -135,7 +135,8 @@ class ContentController extends Controller
 			  }
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
-
+				echo json_encode($items);
+				echo "<br>-----<br>";
 				$availability = $this->checkAvailability($items);
 				if($availability == "1") {
 				 continue;
@@ -633,7 +634,9 @@ class ContentController extends Controller
 	      echo "cURL Error #: $id " . $err;
 	    }
 	    else {
-
+			 if($this->printme == "Y") {
+				echo $response;
+			}
 	      $response = json_decode($response, TRUE);
 		  $vid =  $response['id'];
 		  if(!empty($vid)) {
@@ -641,6 +644,7 @@ class ContentController extends Controller
 			$this->bookIncomingStock($itemId, $vid, $items, $model);
 		  }
 	    }
+
 	  }
 	}
 
