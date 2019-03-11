@@ -87,7 +87,7 @@ class ContentController extends Controller
 		$checktime = date("c", $checktime);
 		$url = "";
 		if($this->printme == "Y") {
-			echo $url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand);
+			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand);
 		}
 		else {
 			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand)."&since=".urlencode($checktime);
@@ -131,12 +131,12 @@ class ContentController extends Controller
 				$this->getManufacturerVariations($manufacturerId,$page);
 			  }
 			  if($this->printme == "Y") {
-				echo json_encode($this->variations);
+				//echo json_encode($this->variations);
 			  }
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
-				echo json_encode($items);
-				echo "<br>-----<br>";
+				//echo json_encode($items);
+				//echo "<br>-----<br>";
 				$availability = $this->checkAvailability($items);
 				if($availability == "1") {
 				 continue;
@@ -366,7 +366,7 @@ class ContentController extends Controller
 	    //print_r($model);
 
 	    $suggestedPrice = $items['suggestedPrice'];
-	    $id = $model['id'];
+	    $id = #$model['id'];
 	    $code = $model['code'];
 	    $availability = $items['availability'];
 	    $streetPrice = $items['streetPrice'];
@@ -393,7 +393,6 @@ class ContentController extends Controller
 	      CURLOPT_TIMEOUT => 90000000,
 	      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	      CURLOPT_CUSTOMREQUEST => "PUT",
-	      //CURLOPT_POSTFIELDS => "{\n    \"isActive\": true,\n    \"purchasePrice\": $purchasePrice,\n    \"model\": \"$model\",\n    \"name\": \"$code\",\n    \"itemId\":\"$itemId\",\n    \"number\": \"$id\",\n    \"availability\": $availability,\n    \"movingAveragePrice\": $avgPrice,\n \"mainWarehouseId\": 104,\n\"variationAttributeValues\": [\n        {\n            \"valueId\": $colorValue\n        },\n        {\n            \"valueId\": $sizeValue\n        }\n        ],\n    \"weightG\": $weight, \n    \"weightNetG\": $weight \n}",
 	      CURLOPT_POSTFIELDS => "{\n    \"isActive\": true,\n    \"itemId\":\"$itemId\",\n \"mainWarehouseId\": 104,\n    \"model\": \"$model\",\n    \"name\": \"$code\",\n    \"weightG\": $weight, \n    \"weightNetG\": $weight }",
 	      CURLOPT_HTTPHEADER => array(
 	        "authorization: Bearer ".$this->access_token,
@@ -411,7 +410,9 @@ class ContentController extends Controller
 	      echo $err;
 	      //return "cURL Error #:" . $err;
 	    } else {
-	      // echo $response;
+	      if($this->printme == "Y") {
+			echo $response;
+			}
 	      $response = json_decode($response, TRUE);
 	      $isActive = $response['isActive'];
 	      return $isActive;
@@ -489,7 +490,7 @@ class ContentController extends Controller
 	      $entries = $response['entries'];
 	      //print_r($entries); exit;
 	      foreach ($entries as $entry) {
-	        if($entry['backendName'] == "$value") {
+	        if(strtolower($entry['backendName']) == strtolower("$value")) {
 	            return $entry['id'];
 	            break;
 	        }
@@ -617,18 +618,19 @@ class ContentController extends Controller
 	      CURLOPT_TIMEOUT => 900000000,
 	      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	      CURLOPT_CUSTOMREQUEST => "POST",
-	      CURLOPT_POSTFIELDS => "{\n    \"itemId\": $itemId,\n    \"isActive\": true,\n    \"purchasePrice\": $purchasePrice,\n    \"name\": \"$code\",\n    \"model\": \"$modelValue\",\n    \"number\": \"$id\",\n    \"availability\": $availability,\n    \"movingAveragePrice\": $avgPrice,\n    \"mainWarehouseId\": 104,\n    \"unit\": {\n        \"unitId\": 1,\n        \"content\": 1\n    },\n \"variationAttributeValues\": [\n        {\n            \"valueId\": $colorValue\n        },\n        {\n            \"valueId\": $sizeValue\n        }\n        ],\n   \"variationClients\": [\n        {\n            \"plentyId\": 42296\n        }\n  ],\n  \"variationBarcodes\": [{\n  \t\t\"barcodeId\":1,\n  \t\t\"code\": \"$barcode\"\n  \t}],\n  \"variationSalesPrices\":[{\n  \"salesPriceId\": 1,\n  \"price\": $salePrice\n  },{\n  \"salesPriceId\": 2,\n  \"price\": $salePriceRRP\n  }]\n}",
+	      CURLOPT_POSTFIELDS => "{\n    \"itemId\": $itemId,\n    \"isActive\": true,\n    \"purchasePrice\": $purchasePrice,\n    \"name\": \"$code\",\n    \"model\": \"$modelValue\",\n    \"number\": \"$id\",\n    \"availability\": $availability,\n    \"movingAveragePrice\": $avgPrice,\n    \"mainWarehouseId\": 104,\n    \"unit\": {\n        \"unitId\": 1,\n        \"content\": 1,\n    },\n \"variationAttributeValues\": [\n        {\n            \"valueId\": $colorValue\n        },\n        {\n            \"valueId\": $sizeValue\n        }\n        ],\n   \"variationClients\": [\n        {\n            \"plentyId\": 42296\n        }\n  ],\n  \"variationBarcodes\": [{\n  \t\t\"barcodeId\":1,\n  \t\t\"code\": \"$barcode\"\n  \t}],\n  \"variationSalesPrices\":[{\n  \"salesPriceId\": 1,\n  \"price\": $salePrice\n  },{\n  \"salesPriceId\": 2,\n  \"price\": $salePriceRRP\n  }]\n}",
 	      CURLOPT_HTTPHEADER => array(
 	        "authorization: Bearer ".$this->access_token,
 	        "cache-control: no-cache",
 	        "content-type: application/json"
 	      ),
 	    ));
-		echo "{\n    \"itemId\": $itemId,\n    \"isActive\": true,\n    \"purchasePrice\": $purchasePrice,\n    \"name\": \"$code\",\n    \"model\": \"$modelValue\",\n    \"number\": \"$id\",\n    \"availability\": $availability,\n    \"movingAveragePrice\": $avgPrice,\n    \"mainWarehouseId\": 104,\n    \"unit\": {\n        \"unitId\": 1,\n        \"content\": 1\n    },\n \"variationAttributeValues\": [\n        {\n            \"valueId\": $colorValue\n        },\n        {\n            \"valueId\": $sizeValue\n        }\n        ],\n   \"variationClients\": [\n        {\n            \"plentyId\": 42296\n        }\n  ],\n  \"variationBarcodes\": [{\n  \t\t\"barcodeId\":1,\n  \t\t\"code\": \"$barcode\"\n  \t}],\n  \"variationSalesPrices\":[{\n  \"salesPriceId\": 1,\n  \"price\": $salePrice\n  },{\n  \"salesPriceId\": 2,\n  \"price\": $salePriceRRP\n  }]\n}";
+
 	    $response = curl_exec($curl);
 	    $err = curl_error($curl);
 
 	    curl_close($curl);
+		echo "{\n    \"itemId\": $itemId,\n    \"isActive\": true,\n    \"purchasePrice\": $purchasePrice,\n    \"name\": \"$code\",\n    \"model\": \"$modelValue\",\n    \"number\": \"$id\",\n    \"availability\": $availability,\n    \"movingAveragePrice\": $avgPrice,\n    \"mainWarehouseId\": 104,\n    \"unit\": {\n        \"unitId\": 1,\n        \"content\": 1\n    },\n \"variationAttributeValues\": [\n        {\n            \"valueId\": $colorValue\n        },\n        {\n            \"valueId\": $sizeValue\n        }\n        ],\n   \"variationClients\": [\n        {\n            \"plentyId\": 42296\n        }\n  ],\n  \"variationBarcodes\": [{\n  \t\t\"barcodeId\":1,\n  \t\t\"code\": \"$barcode\"\n  \t}],\n  \"variationSalesPrices\":[{\n  \"salesPriceId\": 1,\n  \"price\": $salePrice\n  },{\n  \"salesPriceId\": 2,\n  \"price\": $salePriceRRP\n  }]\n}";
 
 	    if ($err) {
 	      echo "cURL Error #: $id " . $err;
