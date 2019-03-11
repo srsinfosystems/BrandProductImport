@@ -16,7 +16,8 @@ class ContentController extends Controller
 	public $access_token;
 	public $plentyhost;
 	public $drophost;
-
+	public $variations;
+	public $printme;
 	/**
 	 * @param Twig $twig
 	 * @return string
@@ -52,6 +53,8 @@ class ContentController extends Controller
 
 		foreach($brands as $brand) {
 			if(empty($brand)) continue;
+			$this->variations = array();
+			$this->printme = "N";
 			$flag = $this->getAllItems($brand);
 		}
 	}
@@ -66,10 +69,11 @@ class ContentController extends Controller
 		$this->access_token = $login['access_token'];
 		$this->plentyhost = "https://".$host;
 		$this->drophost = "https://www.brandsdistribution.com";
-
+		$this->variations = array();
+		$this->printme = "Y";
 		$flag = $this->getAllItems($brand);
 
-		exit;
+
 		/*if ($flag == 1)
 			$data = "Items created successfully.";
 		else
@@ -79,9 +83,17 @@ class ContentController extends Controller
 	public function getAllItems($brand){
 
 		$curl = curl_init();
-
+		$checktime = strtotime("-60 mins");
+		$checktime = date("c", $checktime);
+		$url = "":
+		if($this->printme == "Y") {
+			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand);
+		}
+		else {
+			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand)."&since=".urlencode($checktime);
+		}
 		curl_setopt_array($curl, array(
-		  CURLOPT_URL => $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand),
+		  CURLOPT_URL => $url,
 		  CURLOPT_RETURNTRANSFER => true,
 		  CURLOPT_ENCODING => "",
 		  CURLOPT_MAXREDIRS => 10,
@@ -107,24 +119,42 @@ class ContentController extends Controller
 			$xml = simplexml_load_string($response);
 	        $json = json_encode($xml);
 	        $array = json_decode($json,TRUE);
+			if(empty($array)) return;
+			if (!is_array($array['items']['item'])) {
+			 return;
+			}
 
 	      	$i= 0;
 	      	 $manufacturerId = $this->getManufacturerId($brand);
 			  if(!empty($manufacturerId)) {
-				$variations = $this->getManufacturerVariations($manufacturerId);
+				$page = 1;
+				$variations = $this->getManufacturerVariations($manufacturerId,$page);
+			  }
+			  if($this->printme == "Y") {
+				echo json_encode($this->variations);
 			  }
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
 
-				$availability = $this->checkAvailability($items, $variations);
+				$availability = $this->checkAvailability($items);
 				if($availability == "1") {
 				 continue;
 				}
-
+				if($this->printme == "Y") {
+					echo json_encode($availability);
+				}
 	            $arritem = $this->createItem($items);
-	             // echo json_encode($arritem);
+	            if($this->printme == "Y") {
+					 echo json_encode($arritem);
+				}
 
-	            if(empty($arritem['variationId'])) continue;
+
+	            if(empty($arritem['variationId'])) {
+					if(!empty($arritem['itemId'])) {
+						$this->deleteItem($arritem['itemId']);
+					}
+					continue;
+				}
 	            // Activate item
 	             $status = $this->ActiveItem($arritem['itemId'], $arritem['variationId'], $items );
 
@@ -976,11 +1006,11 @@ class ContentController extends Controller
 	}
 	}
 
-	public function getManufacturerVariations($manufacturerId) {
+	public function getManufacturerVariations($manufacturerId, $page) {
 		$curl = curl_init();
 
 	curl_setopt_array($curl, array(
-	  CURLOPT_URL => $this->plentyhost."/rest/items/variations?manufacturerId=".$manufacturerId."&isActive=true&plentyId=42296&flagTwo=3",
+	  CURLOPT_URL => $this->plentyhost."/rest/items/variations?manufacturerId=".$manufacturerId."&isActive=true&plentyId=42296&flagTwo=3&page=".$page,
 	  CURLOPT_RETURNTRANSFER => true,
 	  CURLOPT_ENCODING => "",
 	  CURLOPT_MAXREDIRS => 10,
@@ -1004,26 +1034,34 @@ class ContentController extends Controller
 	} else {
 	  $response =json_decode($response,true);
 	  if(empty($response) || empty($response['entries'])) return;
-	  $variations = array();
+
 	  foreach($response['entries'] as $entries) {
 		  $number = $entries['number'];
-		$variations[$number] = $entries['id'];
+		$this->variations[$number] = $entries['id'];
 	  }
-	  return $variations;
+
+	}
+	 $last_page = $response['lastPageNumber'];
+	if($page != $last_page) {
+		$page++;
+		$this->getManufacturerVariations($manufacturerId, $page);
+	}
+	else {
+		return $this->variations;
 	}
 }
 
-public function checkAvailability($items, $variations) {
+public function checkAvailability($items) {
 	$models = array();
 	$found = "2";
     if(isset($items['models']['model']['availability'])) {
-      if(array_key_exists($items['models']['model']['id'], $variations)) {
+      if(array_key_exists($items['models']['model']['id'], $this->variations)) {
 		return "1";
 	  }
     }
     else {
       for($i=0; $i<count($items['models']['model']); $i++) {
-		if(array_key_exists($items['models']['model'][$i]['id'], $variations)) {
+		if(array_key_exists($items['models']['model'][$i]['id'], $this->variations)) {
 			$found = "1"; break;
 		}
 
