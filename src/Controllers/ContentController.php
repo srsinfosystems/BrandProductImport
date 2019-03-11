@@ -85,7 +85,7 @@ class ContentController extends Controller
 		$curl = curl_init();
 		$checktime = strtotime("-60 mins");
 		$checktime = date("c", $checktime);
-		$url = "":
+		$url = "";
 		if($this->printme == "Y") {
 			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand);
 		}
