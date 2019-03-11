@@ -135,8 +135,8 @@ class ContentController extends Controller
 			  }
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
-				//echo json_encode($items);
-				//echo "<br>-----<br>";
+				echo json_encode($items);
+				echo "<br>-----<br>";
 				$availability = $this->checkAvailability($items);
 				if($availability == "1") {
 				 continue;
@@ -168,6 +168,7 @@ class ContentController extends Controller
 
 	            $discription = $this->ItemDiscription($arritem['itemId'], $arritem['variationId'], $items['name'], '');
 	            $this->uploadImages($items, $arritem);
+	            echo "Create Sub version";
 	            $this->createSubVariation($arritem['itemId'], $arritem['variationId'], $items);
 	            $this->ActivateShippingProf($arritem['itemId']);
 
@@ -618,7 +619,7 @@ class ContentController extends Controller
 	      CURLOPT_TIMEOUT => 900000000,
 	      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	      CURLOPT_CUSTOMREQUEST => "POST",
-	      CURLOPT_POSTFIELDS => "{\n    \"itemId\": $itemId,\n    \"isActive\": true,\n    \"purchasePrice\": $purchasePrice,\n    \"name\": \"$code\",\n    \"model\": \"$modelValue\",\n    \"number\": \"$id\",\n    \"availability\": $availability,\n    \"movingAveragePrice\": $avgPrice,\n    \"mainWarehouseId\": 104,\n    \"unit\": {\n        \"unitId\": 1,\n        \"content\": 1,\n    },\n \"variationAttributeValues\": [\n        {\n            \"valueId\": $colorValue\n        },\n        {\n            \"valueId\": $sizeValue\n        }\n        ],\n   \"variationClients\": [\n        {\n            \"plentyId\": 42296\n        }\n  ],\n  \"variationBarcodes\": [{\n  \t\t\"barcodeId\":1,\n  \t\t\"code\": \"$barcode\"\n  \t}],\n  \"variationSalesPrices\":[{\n  \"salesPriceId\": 1,\n  \"price\": $salePrice\n  },{\n  \"salesPriceId\": 2,\n  \"price\": $salePriceRRP\n  }]\n}",
+	      CURLOPT_POSTFIELDS => "{\n    \"itemId\": $itemId,\n  \"purchasePrice\": $purchasePrice,\n    \"name\": \"$code\",\n    \"model\": \"$modelValue\",\n    \"number\": \"$id\",\n    \"availability\": $availability,\n    \"movingAveragePrice\": $avgPrice,\n    \"mainWarehouseId\": 104,\n    \"unit\": {\n        \"unitId\": 1,\n        \"content\": 1,\n    },\n \"variationAttributeValues\": [\n        {\n            \"valueId\": $colorValue\n        },\n        {\n            \"valueId\": $sizeValue\n        }\n        ],\n   \"variationClients\": [\n        {\n            \"plentyId\": 42296\n        }\n  ],\n  \"variationBarcodes\": [{\n  \t\t\"barcodeId\":1,\n  \t\t\"code\": \"$barcode\"\n  \t}],\n  \"variationSalesPrices\":[{\n  \"salesPriceId\": 1,\n  \"price\": $salePrice\n  },{\n  \"salesPriceId\": 2,\n  \"price\": $salePriceRRP\n  }]\n}",
 	      CURLOPT_HTTPHEADER => array(
 	        "authorization: Bearer ".$this->access_token,
 	        "cache-control: no-cache",
@@ -640,7 +641,7 @@ class ContentController extends Controller
 				echo $response;
 			}
 	      $response = json_decode($response, TRUE);
-		  $vid =  $response['id'];
+		  $vid =  @$response['id'];
 		  if(!empty($vid)) {
 		  	$this->activateSubVariation($itemId, $vid);
 			$this->bookIncomingStock($itemId, $vid, $items, $model);
