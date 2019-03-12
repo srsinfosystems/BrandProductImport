@@ -383,9 +383,9 @@ class ContentController extends Controller
 	        $weight = $items['weight'] * 1000;
 	    }
 	    $name_id = $this->searchAttributeName('Colour');
-	    $colorValue = $this->searchAttributeValue($name_id,$model['color']);
+	    $colorValue = $this->searchAttributeValue($name_id,$model['color'],1);
 	    $size_id = $this->searchAttributeName('Size');
-	    $sizeValue = $this->searchAttributeValue($size_id,$model['size']);
+	    $sizeValue = $this->searchAttributeValue($size_id,$model['size'],1);
 	    curl_setopt_array($curl, array(
 	      CURLOPT_URL => $this->plentyhost."/rest/items/".$itemId."/variations/".$variationId."",
 	      CURLOPT_RETURNTRANSFER => true,
@@ -461,12 +461,12 @@ class ContentController extends Controller
 	    }
 	}
 
-	public function searchAttributeValue($id,$value) {
+	public function searchAttributeValue($id,$value,$page) {
 
 	    $curl = curl_init();
 
 	    curl_setopt_array($curl, array(
-	      CURLOPT_URL => $this->plentyhost."/rest/items/attributes/".$id."/values",
+	      CURLOPT_URL => $this->plentyhost."/rest/items/attributes/".$id."/values?page=".$page,
 	      CURLOPT_RETURNTRANSFER => true,
 	      CURLOPT_ENCODING => "",
 	      CURLOPT_MAXREDIRS => 10,
@@ -490,12 +490,21 @@ class ContentController extends Controller
 	      $response = json_decode($response, TRUE);
 	      $entries = $response['entries'];
 	      //print_r($entries); exit;
+	      $matched = "";
 	      foreach ($entries as $entry) {
 	        if(strtolower($entry['backendName']) == strtolower("$value")) {
-	            return $entry['id'];
+	            $matched = $entry['id'];
 	            break;
 	        }
-	        }
+	       }
+	      if(!empty($matched)) {
+			return $matched;
+		  }
+		  $last_page = $response['lastPageNumber'];
+	      if($page != $last_page) {
+			$page++;
+			return searchAttributeValue($id,$value, $page);
+		  }
 	        // No match create attribute value
 	        $valId = $this->createAttributeValue($id, $value);
 	        return $valId;
@@ -605,9 +614,9 @@ class ContentController extends Controller
 	      $salePrice = $suggestedPrice;
 
 	    $name_id = $this->searchAttributeName('Colour');
-	    $colorValue = $this->searchAttributeValue($name_id,$model['color']);
+	    $colorValue = $this->searchAttributeValue($name_id,$model['color'],1);
 	    $size_id = $this->searchAttributeName('Size');
-	    $sizeValue = $this->searchAttributeValue($size_id,$model['size']);
+	    $sizeValue = $this->searchAttributeValue($size_id,$model['size'],1);
 
 	    $curl = curl_init();
 
