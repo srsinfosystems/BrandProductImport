@@ -503,7 +503,7 @@ class ContentController extends Controller
 		  $last_page = $response['lastPageNumber'];
 	      if($page != $last_page) {
 			$page++;
-			return searchAttributeValue($id,$value, $page);
+			return $this->searchAttributeValue($id,$value, $page);
 		  }
 	        // No match create attribute value
 	        $valId = $this->createAttributeValue($id, $value);
