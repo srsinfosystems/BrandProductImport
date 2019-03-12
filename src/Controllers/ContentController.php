@@ -56,6 +56,7 @@ class ContentController extends Controller
 			$this->variations = array();
 			$this->printme = "N";
 			$flag = $this->getAllItems($brand);
+			sleep(30);
 		}
 	}
 	public function importProduct(Twig $twig):string
@@ -135,8 +136,7 @@ class ContentController extends Controller
 			  }
 	      if (is_array($array['items']['item'])) {
 	        foreach ($array['items']['item'] as $items) {
-				echo json_encode($items);
-				echo "<br>-----<br>";
+
 				$availability = $this->checkAvailability($items);
 				if($availability == "1") {
 				 continue;
@@ -144,7 +144,7 @@ class ContentController extends Controller
 
 	            $arritem = $this->createItem($items);
 	            if($this->printme == "Y") {
-					 echo json_encode($arritem);
+					 //echo json_encode($arritem);
 				}
 				if(empty($arritem['itemId'])) continue;
 
@@ -168,7 +168,7 @@ class ContentController extends Controller
 
 	            $discription = $this->ItemDiscription($arritem['itemId'], $arritem['variationId'], $items['name'], '');
 	            $this->uploadImages($items, $arritem);
-	            echo "Create Sub version";
+	           // echo "Create Sub version";
 	            $this->createSubVariation($arritem['itemId'], $arritem['variationId'], $items);
 	            $this->ActivateShippingProf($arritem['itemId']);
 
@@ -177,7 +177,7 @@ class ContentController extends Controller
 	            else {
 				$this->deleteItem($arritem['itemId']);
 				if($this->printme == "Y") {
-					echo "DELETED";
+					//echo "DELETED";
 				}
 				}
 
@@ -647,7 +647,7 @@ class ContentController extends Controller
 	    }
 	    else {
 			 if($this->printme == "Y") {
-				echo $response;
+				//echo $response;
 			}
 	      $response = json_decode($response, TRUE);
 		  $vid =  @$response['id'];
