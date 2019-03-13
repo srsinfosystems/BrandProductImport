@@ -13,7 +13,7 @@ class BrandProductImportServiceProvider extends ServiceProvider
 {
 
 	public function boot(CronContainer $container) {
-		$container->add(CronContainer::HOURLY, BrandProductImportCron::class);
+		$container->add(CronContainer::DAILY, BrandProductImportCron::class);
 	}
 	/**
 	 * Register the service provider.

@@ -84,7 +84,7 @@ class ContentController extends Controller
 	public function getAllItems($brand){
 
 		$curl = curl_init();
-		$checktime = strtotime("-20 mins");
+		$checktime = strtotime("-90 mins");
 		$checktime = date("c", $checktime);
 		$url = "";
 		if($this->printme == "Y") {
