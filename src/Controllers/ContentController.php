@@ -81,6 +81,7 @@ class ContentController extends Controller
 			$data = "Somthing went wrong.";*/
 		//return $twig->render('HelloWorld::content.importProduct');
 	}
+
 	public function getAllItems($brand){
 
 		$curl = curl_init();
@@ -88,10 +89,10 @@ class ContentController extends Controller
 		$checktime = date("c", $checktime);
 		$url = "";
 		if($this->printme == "Y") {
-			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand);
+			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&acceptedlocales=en_US&tag_1=".urlencode($brand);
 		}
 		else {
-			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&tag_1=".urlencode($brand)."&since=".urlencode($checktime);
+			$url = $this->drophost."/restful/export/api/products.xml?Accept=application%2Fxml&acceptedlocales=en_US&tag_1=".urlencode($brand)."&since=".urlencode($checktime);
 		}
 		curl_setopt_array($curl, array(
 		  CURLOPT_URL => $url,
@@ -165,8 +166,8 @@ class ContentController extends Controller
 					$barCode = $model['barcode'];
 				}
 	            //$barcode = $this->linkingBarcode($arritem['itemId'], $arritem['variationId'], $barCode);
-
-	            $discription = $this->ItemDiscription($arritem['itemId'], $arritem['variationId'], $items['name'], '');
+				$txtDes = isset($items['description'])?html_entity_decode($items['description']):'';
+	            $discription = $this->ItemDiscription($arritem['itemId'], $arritem['variationId'], $items['name'], $txtDes);
 	            $this->uploadImages($items, $arritem);
 	           // echo "Create Sub version";
 	            $this->createSubVariation($arritem['itemId'], $arritem['variationId'], $items);
