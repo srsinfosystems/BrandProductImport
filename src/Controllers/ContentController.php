@@ -167,6 +167,7 @@ class ContentController extends Controller
 				}
 	            //$barcode = $this->linkingBarcode($arritem['itemId'], $arritem['variationId'], $barCode);
 				$txtDes = isset($items['description'])?html_entity_decode($items['description']):'';
+				$txtDes = trim(strip_tags($txtDes));
 	            $discription = $this->ItemDiscription($arritem['itemId'], $arritem['variationId'], $items['name'], $txtDes);
 	            $this->uploadImages($items, $arritem);
 	           // echo "Create Sub version";
@@ -664,6 +665,7 @@ class ContentController extends Controller
 	public function ItemDiscription($itemId, $variationId, $ItemName, $discription){
 
 	    $curl = curl_init();
+		$postdata = "itemId=".$itemId."&lang=en&name=".htmlentities($ItemName)."&description=".htmlentities($discription);
 
 	    curl_setopt_array($curl, array(
 	      CURLOPT_URL => $this->plentyhost."/rest/items/".$itemId."/variations/".$variationId."/descriptions",
@@ -673,14 +675,14 @@ class ContentController extends Controller
 	      CURLOPT_TIMEOUT => 900000000,
 	      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	      CURLOPT_CUSTOMREQUEST => "POST",
-	      CURLOPT_POSTFIELDS => "{\"itemId\": $itemId,\"lang\": \"en\",\"name\": \"$ItemName\",\"description\": \"$discription\"}",
+	      CURLOPT_POSTFIELDS => $postdata,
 	      CURLOPT_HTTPHEADER => array(
 	        "authorization: Bearer ".$this->access_token,
 	        "cache-control: no-cache",
-	        "content-type: application/json"
+	         "content-type: application/x-www-form-urlencoded"
 	      ),
 	    ));
-
+		//"{\"itemId\": $itemId,\"lang\": \"en\",\"name\": \"$ItemName\",\"description\": \"$discription\"}",
 	    $response = curl_exec($curl);
 	    $err = curl_error($curl);
 
